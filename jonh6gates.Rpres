@@ -1,0 +1,118 @@
+Data Product Presentation
+========================================================
+author: John 6 Gates
+date: 20nd March, 2015
+
+Introduction
+========================================================
+
+- The shiny app for this project to find MPG for selected parameters
+- It also suggest car according to predictd MPG 
+- data is collected from following websites
+- https://archive.ics.uci.edu/ml/datasets/Auto+MPG
+- use caret package.
+
+Loading and cleaning data
+========================================================
+```{r, echo=FALSE}
+data <- read.csv('C:/Users/User/Desktop/Lav Patel/lav/dataproduct/car1.csv', 
+                na.strings = "?")
+data<-data[is.na(data[,4]),]
+data<- data[,c(1,2,4,5,7,9)]
+colnames(data)<- c("mpg", "cylinder","horsepower", "weight", "year", "name")
+```
+```{r}
+str(data)
+```
+```{r, echo=FALSE}
+library(RCurl)
+library(caret)
+modFit <- train(mpg ~ horsepower + cylinder + weight + year , method="glm", data=data)
+```
+```{r, echo=FALSE, results=hide}
+modFit$finalModel
+```
+
+
+OverView
+========================================================
+Data Product Presentation
+========================================================
+author: John 6 Gates
+date: 20nd March, 2015
+
+OverView
+========================================================
+
+
+Loading and cleaning data
+========================================================
+
+```{r, echo=FALSE}
+mpg <- read.csv('C:/Users/User/Desktop/Lav Patel/lav/dataproduct/car1.csv', 
+                na.strings = "?")
+mpg<-mpg[!is.na(mpg[,4]),]
+mpg<- mpg[,c(1,2,4,5,7,9)]
+colnames(mpg)<- c("mpg", "cylinder","horsepower", "weight", "year", "name")
+```
+
+```{r}
+str(mpg)
+```
+
+
+```{r, echo=FALSE, results=hide}
+library(RCurl)
+library(caret)
+modFit <- train(mpg ~ horsepower + cylinder + weight + year , method="glm", data=mpg)
+```
+```{r, echo=FALSE, results=hide}
+modFit$finalModel
+```
+
+Creating funciton to predict MPG 
+========================================================
+
+```{r, echo=FALSE}
+prediction<- function(cylinder=3,
+                      horsepower=100,weight=3000,
+                      year=78){
+    selections<- as.data.frame(cbind(as.integer(cylinder),as.integer(horsepower),
+                                     as.integer(weight), as.integer(year)))
+    colnames(selections)<- c("cylinder","horsepower","weight", "year")
+    predictionResults<-predict(modFit, newdata=selections)
+    predictionResults
+}
+closest<- function(x){
+    mpg[which.min(abs(mpg[,1]-x)),]
+}
+findCar<- function(cylinder=3,
+                      horsepower=100,weight=3000,
+                      year=78){
+    
+    x<-mpg[mpg[,"cylinder"]==as.integer(cylinder),] 
+    y<- x[which.min(abs(x[,"horsepower"]-as.integer(horsepower))),]
+    z<- y[which.min(abs(y[,"weight"]-as.integer(weight))),]
+    z
+}
+```
+
+```{r}
+print ("MPG of your dream Car")
+prediction(cylinder=3,horsepower=100,
+           weight=3000,year=78)
+Print ("Closest MPG Match")
+closest(25.14556)
+```
+
+Creating funciton to predict Closest MPG car & Uploading files
+========================================================
+```{r}
+Print ("Closest Match accroding to cylinder, horsepower, weight")
+findCar(cylinder=3,horsepower=100,
+           weight=3000)
+
+```
+
+-Once app is developed and tested
+- app is deloped to shiny using deployApp() commond
