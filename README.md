@@ -1,6 +1,6 @@
 Data Product Presentation
 ========================================================
-author: John 6 Gates
+author: Lav Patel
 date: 20nd March, 2015
 
 Introduction
